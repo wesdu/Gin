@@ -1,0 +1,15 @@
+<html>
+<head>
+</head>
+<body>
+<h2>hello world</h2>
+</body>
+</html>
+<script>
+	var ws= new WebSocket('ws://localhost:80');
+	ws.onmessage= function(data) {
+		document.write(data.data);
+	}	
+
+</script>
+

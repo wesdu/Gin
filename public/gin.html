@@ -1,0 +1,437 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" /> 
+	<title>Gin</title>
+	<!--
+	<script src="mvcfw.js" type="text/javascript"></script>
+	<link type="text/css" rel="stylesheet" href="style.css" />
+	-->
+
+	<script src="./jet.all.js" type="text/javascript"></script>
+	<script src="./mvcfw.js" type="text/javascript"></script>
+
+	<style>
+html{
+	_background:url(./jet.fix);  /* 阻止闪动 in IE6 */
+}
+input {
+	outline:none;
+}
+
+/*
+	TODO remove settings on BODY since we can't namespace it.
+*/
+/*
+	TODO test putting a class on HEAD.
+		- Fails on FF. 
+*/
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+code,
+form,
+fieldset,
+legend,
+input,
+textarea,
+p,
+blockquote,
+th,
+td {
+	margin:0;
+	padding:0;
+}
+body{
+	line-height: 1.5;
+}
+table {
+	border-collapse:collapse;
+	border-spacing:0;
+}
+fieldset,
+img {
+	border:0;
+}
+/*
+	TODO think about hanlding inheritence differently, maybe letting IE6 fail a bit...
+*/
+address,
+caption,
+cite,
+code,
+dfn,
+em,
+strong,
+th,
+var {
+	font-style:normal;
+	font-weight:normal;
+}
+
+code,
+kbd,
+samp,
+tt{
+	font-size: 100%;
+}
+
+
+/*
+	TODO Figure out where this list-style rule is best set. Hedger has a request to investigate.
+*/
+ol,
+ul {
+	list-style:none;
+}
+
+caption,
+th {
+	text-align:left;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-size:100%;
+	font-weight:normal;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+	content: '';
+	content: none;
+}
+
+a:link,
+a:visited {
+	text-decoration: none;
+	color:#2D67C1;
+}
+
+/* remember to define focus styles! 
+:focus {
+	outline: 0;
+}
+*/
+
+abbr,
+acronym {
+	border:0;
+	font-variant:normal;
+}
+/* to preserve line-height and selector appearance */
+sup {
+	font-size: 100%;
+	vertical-align:text-top;
+}
+sub {
+	font-size: 100%;
+	vertical-align:text-bottom;
+}
+input,
+textarea,
+select {
+	font-family:inherit;
+	font-size:inherit;
+	font-weight:inherit;
+}
+/*to enable resizing for IE*/
+input,
+textarea,
+select {
+	*font-size:100%;
+}
+/*because legend doesn't inherit in IE */
+legend {
+	color:#000;
+}
+body {
+	font: 12px/1.5 tahoma, helvetica, clean, sans-serif;
+	color: #333;
+	cursor: default;
+}
+	.head{
+		height: 30px;
+		top:0;
+		left: 20px;
+		right:20px;
+		background: #111;
+		background: -webkit-gradient(linear,left top,left bottom,from(#333),to(#111));
+		background: -moz-linear-gradient(top,#333,#111);
+		background: transparent	9;
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#333',endColorstr='#111');
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+		-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+		-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+		border-bottom-right-radius: 4px 4px;
+		border-bottom-left-radius: 4px 4px;
+	}
+	.content{
+		position:absolute;
+		top:32px;
+		bottom:30px;
+		left:30px;
+		right:30px;
+		border-bottom-right-radius: 4px 4px;
+		border-bottom-left-radius: 4px 4px;
+		overflow-y:auto;
+		overflow-x:hidden;
+	}
+	.head .title{
+		color:#F9F9F9;
+		height:30px;
+		line-height:30px;
+		margin-left:30px;
+		cursor:pointer;
+	}
+	.datahead{
+		padding-left:10px;
+		padding-right:10px;
+	}
+	.data{
+		display:-webkit-box;
+		-webkit-box-align:stretch;
+		-webkit-box-orient:horizontal;
+		left:20px;
+		right:20px;
+		top:30px;
+		bottom:20px;
+	}
+	.dataleft, .dataright{
+		position:relative;
+		margin-top:10px;
+		-webkit-box-flex:1;
+		overflow-x:hidden;
+		width: 50px;
+	}
+	.dataright{
+		display:none;
+	}
+	.dataflow{
+		position:relative;
+		background:#fff;
+		overflow-y:auto;
+		border-radius: 4px 4px;
+		padding:0px 10px 10px 10px;
+	}
+	.datahead .flowitem div{
+		background: -webkit-gradient(linear,left top,left bottom,from(#333),to(#111));
+		color:#fff;
+	}
+	.flowitem{
+		display:-webkit-box;
+		-webkit-box-align:stretch;
+		-webkit-box-orient:horizontal;
+		height:30px;
+		line-height:30px;
+	}
+	.dataflow .flowitem:hover > div{
+		background:#fff;
+		color: black;
+		border-color:#fff;
+	}
+	.result, .type, .ip, .host, .url{
+		text-align:center;
+		height:20px;
+		line-height:20px;
+		border:1px solid #9CC2EF;
+		border-radius: 4px 4px;
+		color: #707070;
+		margin-right:5px;
+		cursor:pointer;
+		background:#F1F7FF;
+	}
+	.result, .type, .host{
+		width:50px;
+	}
+	.ip {
+		width:100px;
+	}
+	.host {
+		width:150px;
+	}
+	.url {
+		-webkit-box-flex:1;
+		text-align:left;
+		text-indent:20px;
+	}
+	.code_200{
+		color:#FAFAFA;
+		background:green;
+	}
+	.code_404{
+		color:#FAFAFA;
+		background:red;
+	}
+	.code_500{
+		color:#FAFAFA;
+		background:black;
+	}
+	
+	</style>
+</head> 
+<body>
+	<div class="head">
+		<div class="title">Project Gin</div>
+	</div>
+	<div class="content">
+		<div class="data">
+			<div class="dataleft">
+				<div class="datahead">
+					<div class="flowitem">
+						<div class="result">code</div>
+						<div class="type">type</div>
+						<div class="host">host</div>
+						<div class="ip">ip</div>
+						<div class="url">path</div>
+					</div>
+				</div>
+				<div class="dataflow">
+					<div class="flowitem">
+						<div class="result code_200">200</div>
+						<div class="type">GET</div>
+						<div class="host">www.qq.com</div>
+						<div class="ip">169.255.255.254</div>
+						<div class="url">/hello/hi/main.js</div>
+					</div>
+					<div class="flowitem">
+						<div class="result code_200">200</div>
+						<div class="type">GET</div>
+						<div class="host">www.qq.com</div>
+						<div class="ip">127.0.0.1</div>
+						<div class="url">/hello/hi/main.js</div>
+					</div>
+					<div class="flowitem">
+						<div class="result code_404">404</div>
+						<div class="type">GET</div>
+						<div class="host">www.qq.com</div>
+						<div class="ip">127.0.0.1</div>
+						<div class="url">/hello/hi/main.js</div>
+					</div>
+					<div class="flowitem">
+						<div class="result code_200">200</div>
+						<div class="type">GET</div>
+						<div class="host">www.qq.com</div>
+						<div class="ip">127.0.0.1</div>
+						<div class="url">/hello/hi/main.js</div>
+					</div>
+					<div class="flowitem">
+						<div class="result code_200">200</div>
+						<div class="type">GET</div>
+						<div class="host">www.qq.com</div>
+						<div class="ip">169.255.255.254</div>
+						<div class="url">/hello/hi/main.js</div>
+					</div>
+					<div class="flowitem">
+						<div class="result code_200">200</div>
+						<div class="type">GET</div>
+						<div class="host">www.qq.com</div>
+						<div class="ip">127.0.0.1</div>
+						<div class="url">/hello/hi/main.js</div>
+					</div>
+					<div class="flowitem">
+						<div class="result code_404">404</div>
+						<div class="type">GET</div>
+						<div class="host">www.qq.com</div>
+						<div class="ip">127.0.0.1</div>
+						<div class="url">/hello/hi/main.js</div>
+					</div>
+					<div class="flowitem">
+						<div class="result">304</div>
+						<div class="type">GET</div>
+						<div class="host">www.qq.com</div>
+						<div class="ip">127.0.0.1</div>
+						<div class="url">/hello/hi/main.js</div>
+					</div>
+					<div class="flowitem">
+						<div class="result code_200">200</div>
+						<div class="type">GET</div>
+						<div class="host">www.qq.com</div>
+						<div class="ip">169.255.255.254</div>
+						<div class="url">/hello/hi/main.js</div>
+					</div>
+					<div class="flowitem">
+						<div class="result code_500">500</div>
+						<div class="type">GET</div>
+						<div class="host">www.qq.com</div>
+						<div class="ip">127.0.0.1</div>
+						<div class="url">/hello/hi/main.js</div>
+					</div>
+					<div class="flowitem">
+						<div class="result">-</div>
+						<div class="type">POST</div>
+						<div class="host">www.qq.com</div>
+						<div class="ip">127.0.0.1</div>
+						<div class="url">/hello/hi/main.js</div>
+					</div>
+				</div>
+			</div>
+			<div class="dataright">
+
+			</div>
+		</div>
+	</div>
+	
+	<div class="a">
+		<div class="b">
+		</div>
+		<div class="c">
+			<div class="d">
+			</div>
+			<div class="e">
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+	var websocket= new WebSocket('ws://localhost:80');
+	console.info("websocket connected");
+	websocket.onmessage= function(data) {
+		fire("dispatch", data.data);
+	}
+	//模块数组
+    var modules= [];
+    //简单实现消息传递，沙箱解耦
+    var fire= function() {
+        var message= arguments[0];
+        for(var i=0;i<modules.length;i++) {
+            if(modules[i]["observers"] && modules[i]["observers"][message]) {
+                modules[i]["observers"][message].apply(null,[].slice.call(arguments).slice(1));
+            }
+        }
+	}
+	var dispatcher= function() {
+		return {
+			observers: {
+				dispatch: function(data) {
+					console.info("get_", data);
+				}
+			}
+		}
+	};
+
+	window.addEventListener("load",function(){
+		//load module
+		modules.push(dispatcher= dispatcher());
+	});
+</script>
+</html>
