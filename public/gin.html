@@ -259,6 +259,7 @@ body {
 		margin-right:5px;
 		cursor:pointer;
 		background:#F1F7FF;
+		overflow:hidden;
 	}
 	.result, .type, .host{
 		width:50px;
@@ -305,7 +306,8 @@ body {
 						<div class="url">path</div>
 					</div>
 				</div>
-				<div class="dataflow">
+				<div id="dataflow" class="dataflow">
+					<!--
 					<div class="flowitem">
 						<div class="result code_200">200</div>
 						<div class="type">GET</div>
@@ -313,96 +315,26 @@ body {
 						<div class="ip">169.255.255.254</div>
 						<div class="url">/hello/hi/main.js</div>
 					</div>
-					<div class="flowitem">
-						<div class="result code_200">200</div>
-						<div class="type">GET</div>
-						<div class="host">www.qq.com</div>
-						<div class="ip">127.0.0.1</div>
-						<div class="url">/hello/hi/main.js</div>
-					</div>
-					<div class="flowitem">
-						<div class="result code_404">404</div>
-						<div class="type">GET</div>
-						<div class="host">www.qq.com</div>
-						<div class="ip">127.0.0.1</div>
-						<div class="url">/hello/hi/main.js</div>
-					</div>
-					<div class="flowitem">
-						<div class="result code_200">200</div>
-						<div class="type">GET</div>
-						<div class="host">www.qq.com</div>
-						<div class="ip">127.0.0.1</div>
-						<div class="url">/hello/hi/main.js</div>
-					</div>
-					<div class="flowitem">
-						<div class="result code_200">200</div>
-						<div class="type">GET</div>
-						<div class="host">www.qq.com</div>
-						<div class="ip">169.255.255.254</div>
-						<div class="url">/hello/hi/main.js</div>
-					</div>
-					<div class="flowitem">
-						<div class="result code_200">200</div>
-						<div class="type">GET</div>
-						<div class="host">www.qq.com</div>
-						<div class="ip">127.0.0.1</div>
-						<div class="url">/hello/hi/main.js</div>
-					</div>
-					<div class="flowitem">
-						<div class="result code_404">404</div>
-						<div class="type">GET</div>
-						<div class="host">www.qq.com</div>
-						<div class="ip">127.0.0.1</div>
-						<div class="url">/hello/hi/main.js</div>
-					</div>
-					<div class="flowitem">
-						<div class="result">304</div>
-						<div class="type">GET</div>
-						<div class="host">www.qq.com</div>
-						<div class="ip">127.0.0.1</div>
-						<div class="url">/hello/hi/main.js</div>
-					</div>
-					<div class="flowitem">
-						<div class="result code_200">200</div>
-						<div class="type">GET</div>
-						<div class="host">www.qq.com</div>
-						<div class="ip">169.255.255.254</div>
-						<div class="url">/hello/hi/main.js</div>
-					</div>
-					<div class="flowitem">
-						<div class="result code_500">500</div>
-						<div class="type">GET</div>
-						<div class="host">www.qq.com</div>
-						<div class="ip">127.0.0.1</div>
-						<div class="url">/hello/hi/main.js</div>
-					</div>
-					<div class="flowitem">
-						<div class="result">-</div>
-						<div class="type">POST</div>
-						<div class="host">www.qq.com</div>
-						<div class="ip">127.0.0.1</div>
-						<div class="url">/hello/hi/main.js</div>
-					</div>
-				</div>
+					-->
+				</div>	
+			</div>
 			</div>
 			<div class="dataright">
 
 			</div>
 		</div>
 	</div>
-	
-	<div class="a">
-		<div class="b">
-		</div>
-		<div class="c">
-			<div class="d">
-			</div>
-			<div class="e">
-			</div>
-		</div>
-	</div>
 </body>
 <script>
+	var J= Jet();
+	var $D = J.dom,
+        $E = J.event,
+        $S = J.string,
+        $V= q.view,
+        $M= q.model,
+        $C= q.controller,
+        $CL= q.collection,
+        $F= q.func;
 	var websocket= new WebSocket('ws://localhost:80');
 	console.info("websocket connected");
 	websocket.onmessage= function(data) {
@@ -414,8 +346,8 @@ body {
     var fire= function() {
         var message= arguments[0];
         for(var i=0;i<modules.length;i++) {
-            if(modules[i]["observers"] && modules[i]["observers"][message]) {
-                modules[i]["observers"][message].apply(null,[].slice.call(arguments).slice(1));
+			if(modules[i]["observers"] && modules[i]["observers"][message]) {
+				modules[i]["observers"][message].apply(null,[].slice.call(arguments).slice(1));
             }
         }
 	}
@@ -423,15 +355,62 @@ body {
 		return {
 			observers: {
 				dispatch: function(data) {
-					console.info("get_", data);
+					//console.info("get_", data);
 				}
 			}
 		}
+	};
+	var httpListModule= function() {
+    //分组视图
+        var HttpListView= $V.extend({
+			init: function(data) {
+				
+            },
+            target: "dataflow",
+			container: ["div",{"class":"flowitem"}],
+			template: '\
+					<div class="result">-</div>\
+					<div class="type"><%=method%></div>\
+					<div class="host"><%=host%></div>\
+					<div class="ip"><%=address%></div>\
+					<div class="url"><%=path%></div>\
+					',
+			update: function() {
+					
+			},
+		});
+        var HttpListModel= $M.extend({
+        });
+        var HttpListCollection= $CL.extend({
+            model: HttpListModel,
+            key: "seq"
+        });
+        var HttpListController= $C.extend({
+            collection: HttpListCollection,
+            view: HttpListView,
+            fetch: function(data) {
+                this.feed(data);
+            },
+            viewObserver: {
+            }
+        });
+		var httpList= new HttpListController({});
+		return {
+			observers: {
+				dispatch: function(data) {
+					var data= JSON.parse(data);
+					console.info(data);
+					httpList.bite(data);
+				}
+			}
+		}
+	
 	};
 
 	window.addEventListener("load",function(){
 		//load module
 		modules.push(dispatcher= dispatcher());
+		modules.push(httpListModule= httpListModule());
 	});
 </script>
 </html>

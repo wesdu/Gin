@@ -341,7 +341,7 @@
 						f= null;
 					}
 					this.el= $D.node.apply(null,this.container);
-					this.el.id= this.getId();
+					//this.el.id= this.getId();
 					if(f) {
 						f(this.el,this);
 						this.container.push(f);
