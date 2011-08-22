@@ -1,9 +1,9 @@
-#!/bin/node
 var net = require('net');
 var sys = require('sys');
 var fs = require('fs');
 var websocket= require('./websocket');
 var webserver= require('./webserver');
+var tls= require("tls");
 var dns= require('dns');
 var spawn = require('child_process').spawn;
 var local_port = 8833;
@@ -53,21 +53,21 @@ net.createServer(function (client)
     //首先监听浏览器的数据发送事件，直到收到的数据包含完整的http请求头
     var buffer = new Buffer(0);
 	var response = new Buffer(0);
-	var seq, req, requestHeader, responseHeader, responseBody;  
-	//client.setNoDelay(true);
+	var seq, req, requestHeader, responseHeader, responseBody;
+	
+	client.setNoDelay(true);
     client.on('data',function(data)
     {
-        buffer = buffer_add(buffer,data);
+		buffer = buffer_add(buffer, data);
+		console.info("first", data);
         if (buffer_find_body(buffer) == -1) return;
         req = parse_request(buffer, client);
         if (req === false) return;
-		dns.lookup(req.host, function(err, address) {
-			req.address= address;
-			seq= ++reqNo;
-			req.seq= seq;
-			websocket.io(JSON.stringify(req));	
-		});
-		//client.removeAllListeners('data');
+		seq= ++reqNo;
+		req.seq= seq;
+		client.pause();	
+		client.removeAllListeners('data');
+		websocket.io(JSON.stringify(req));
         relay_connection(req);
     });
     function relay_connection(req)
@@ -80,9 +80,12 @@ net.createServer(function (client)
             if (_body_pos < 0) _body_pos = buffer.length;
             var header = buffer.slice(0,_body_pos).toString('utf8');
             //替换connection头
+			/*
             header = header.replace(/(proxy\-)?connection\:.+\r\n/ig,'')
                     .replace(/Keep\-Alive\:.+\r\n/i,'')
-                    .replace("\r\n",'\r\nConnection: close\r\n');
+					.replace("\r\n",'\r\nConnection: close\r\n');
+			*/
+			header = header.replace('Proxy-Connection: keep-alive','Connection: keep-alive');
             //替换网址格式(去掉域名部分)
 			
             if (req.httpVersion == '1.1')
@@ -92,7 +95,8 @@ net.createServer(function (client)
             }
 		
             buffer = buffer_add(new Buffer(header,'utf8'),buffer.slice(_body_pos));
-        }
+        }else {
+		}
 
 		requestHeader= buffer.toString();
 		
@@ -107,19 +111,87 @@ net.createServer(function (client)
 			client.write(responseHeader);
 			responseHeader= responseHeader.toString("utf8");
 			responseBody= html;
+			clietn.resume();
 			client.write(html);
 			client.end();
 		}else {
-			//建立到目标服务器的连接
-			var server = net.createConnection(req.port,req.host);
-			server.on("connect", function() {
-				//交换服务器与浏览器的数据
-				client.on("data", function(data){ 
-					server.write(data); 
+			//server.setKeepAlive(true)
+			var server;
+			var connCallBack= function() {
+				console.info("connected!!!");
+				var req2,buffer2= new Buffer(0),isKeepAlive;
+				client.on("data", function(data){
+				   	try {	
+						client.setKeepAlive(true);
+						server.setKeepAlive(true);
+					}catch(e) {
+						console.info(e);
+					}
+					//client.setNoDelay(true);
+					//console.info("request", seq, data.toString("utf8"));
+					/*
+					buffer2 = buffer_add(buffer2, data);
+					if (buffer_find_body(buffer2) == -1) return;
+					req2 = parse_request(buffer2);
+					if (req2 === false) return;
+					if (req2.method != 'CONNECT')
+					{
+						//先从buffer中取出头部
+						var _body_pos = buffer_find_body(buffer2);
+						if (_body_pos < 0) _body_pos = buffer2.length;
+						var header = buffer2.slice(0,_body_pos).toString('utf8');
+						//替换connection头
+						header = header.replace(/(proxy\-)?connection\:.+\r\n/ig,'')
+								.replace(/Keep\-Alive\:.+\r\n/ig,'')
+								.replace("\r\n",'\r\nConnection: close\r\n');
+						//替换网址格式(去掉域名部分)
+						
+						if (req2.httpVersion == '1.1')
+						{
+							var url = req2.path.replace(/http\:\/\/[^\/]+/,'');
+							if (url.path != url) header = header.replace(req2.path,url);
+						}
+					
+						var buffer = buffer_add(new Buffer(header,'utf8'),buffer2.slice(_body_pos));
+					}
+					if(buffer.toString().split("\r\n\r\n").length>2) {
+						isKeepAlive= true;
+						console.info(seq);
+					}
+					*/
+					if (req.method == 'CONNECT') {
+						//字符串化再buffer回来估计导致二进制数据变化了
+						buffer2= buffer_add(buffer2, data);
+					}else {
+						var temp= data.toString("utf8").replace('Proxy-Connection: keep-alive','Connection: keep-alive')
+							.replace(/(http\:\/\/[^\/]*\/)(.* HTTP\/1\.1)/,"/$2");
+						data= new Buffer(temp, "utf8");
+					}
+					console.info("request", seq, data);
+					server.write(data);
 				});
+				
+				//client.setKeepAlive(true);
 				server.on("data", function(data){
+					//console.info("response", seq, data.toString());
+					//var _body_pos = buffer_find_body(buffer2);
+					//buffer2 = buffer_add(buffer2, data);
+					console.info("data",seq,data);
+					if(data.toString('utf8').indexOf("Connection: close") != -1) {
+						try {
+							client.setKeepAlive(false);
+							server.setKeepAlive(false);
+						}catch(e) {
+							console.info(e);
+						}
+					}
+					try {
+						client.write(data);
+					   	
+					}catch(e) {
+						console.info("ooops", seq);
+					}
 					response= buffer_add(response, data);
-					client.write(data); 
 				});
 				var resHeadObj= {};
 				var responseWS= function() {
@@ -131,6 +203,8 @@ net.createServer(function (client)
 				};
 				server.on("end", function() {
 					var pos= buffer_find_body(response);
+					//console.info("end", seq, response.toString())
+					/*
 					responseHeader= response.slice(0, pos);
 					resHeadObj= parse_response(responseHeader);
 					responseHeader= responseHeader.toString("utf8");
@@ -143,16 +217,59 @@ net.createServer(function (client)
 						responseBody= response.slice(pos).toString("utf8");
 						responseWS();
 					}
-					client.end()
+					*/
+					client.end();
+					//client.destory();
 				});
+				client.on("end", function() {
+					console.info("client end", seq);
+				});
+				
+				//client.setKeepAlive(true);
+				client.resume();
+				
 				if (req.method == 'CONNECT') {
-					client.write(new Buffer("HTTP/1.1 200 Connection established\r\nConnection: close\r\n\r\n"));
+					//client.write(new Buffer("HTTP/1.1 200 Connection established\r\nConnection: keep-alive\r\n\r\n"));
+					//server.write(buffer);
 				}
 				else {
 					//输出修改后的请求头
+					//console.info("header", seq, buffer.toString("utf8"))
 					server.write(buffer);
-				}	
-			});
+				}
+				
+			};
+			var connCallBack2= function() {
+				//client.setKeepAlive(true);
+				console.info("connected!!!");
+				var req2,buffer2= new Buffer(0),isKeepAlive;
+				client.on("data", function(data){
+					server.write(data);
+				});
+				server.on("data", function(data){
+					try {
+						client.write(data);
+					   	
+					}catch(e) {
+						console.info("ooops", seq);
+					}
+				});
+				server.on("end", function() {
+					client.end();
+				});
+				client.on("end", function() {
+					console.info("client end", seq);
+				});
+				client.resume();
+			};	
+			//建立到目标服务器的连接
+			if(req.method == "CONNECT") {
+				server = net.createConnection(8433,"localhost", connCallBack2);
+				//var server = net.createConnection(req.port,req.host, connCallBack);	
+			}else {
+				server = net.createConnection(req.port,req.host, connCallBack);
+			}
+
 		}
 			
     }
@@ -162,11 +279,13 @@ console.log('Proxy server running at localhost:'+local_port);
 
 
 //处理各种错误
+/*
 process.on('uncaughtException', function(err)
 {
-    //console.log("\nError!!!!");
-    //console.log(err);
+    console.log("err",err);
 });
+*/
+
 
 
 

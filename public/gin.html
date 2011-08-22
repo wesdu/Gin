@@ -193,7 +193,7 @@ body {
 		right:30px;
 		border-bottom-right-radius: 4px 4px;
 		border-bottom-left-radius: 4px 4px;
-		overflow-y:auto;
+		overflow-y:hidden;
 		overflow-x:hidden;
 	}
 	.head .title{
@@ -203,35 +203,25 @@ body {
 		margin-left:30px;
 		cursor:pointer;
 	}
-	.datahead{
-		padding-left:10px;
-		padding-right:10px;
+	.datahead, .dataflow{
+		position:relative;
+		background:#fff;
+		border-radius: 4px 4px;
+		padding:0px 10px 0px 10px;
 	}
 	.data{
 		display:-webkit-box;
 		-webkit-box-align:stretch;
 		-webkit-box-orient:horizontal;
-		left:20px;
-		right:20px;
-		top:30px;
-		bottom:20px;
 	}
 	.dataleft, .dataright{
 		position:relative;
 		margin-top:10px;
 		-webkit-box-flex:1;
-		overflow-x:hidden;
-		width: 50px;
+		overflow:auto;
 	}
 	.dataright{
 		display:none;
-	}
-	.dataflow{
-		position:relative;
-		background:#fff;
-		overflow-y:auto;
-		border-radius: 4px 4px;
-		padding:0px 10px 10px 10px;
 	}
 	.datahead .flowitem div{
 		background: -webkit-gradient(linear,left top,left bottom,from(#333),to(#111));
@@ -260,6 +250,7 @@ body {
 		cursor:pointer;
 		background:#F1F7FF;
 		overflow:hidden;
+		white-space:nowrap;
 	}
 	.result, .type, .host{
 		width:50px;
@@ -274,6 +265,7 @@ body {
 		-webkit-box-flex:1;
 		text-align:left;
 		text-indent:20px;
+		min-width:300px;
 	}
 	.code_200{
 		color:#FAFAFA;
@@ -296,7 +288,7 @@ body {
 	</div>
 	<div class="content">
 		<div class="data">
-			<div class="dataleft">
+			<div id="dataleft" class="dataleft">
 				<div class="datahead">
 					<div class="flowitem">
 						<div class="result">code</div>
@@ -318,7 +310,6 @@ body {
 					-->
 				</div>	
 			</div>
-			</div>
 			<div class="dataright">
 
 			</div>
@@ -335,8 +326,8 @@ body {
         $C= q.controller,
         $CL= q.collection,
         $F= q.func;
+	//TODO 监控是否建立websocket	
 	var websocket= new WebSocket('ws://localhost:80');
-	console.info("websocket connected");
 	websocket.onmessage= function(data) {
 		fire("dispatch", data.data);
 	}
@@ -369,14 +360,19 @@ body {
             target: "dataflow",
 			container: ["div",{"class":"flowitem"}],
 			template: '\
-					<div class="result">-</div>\
+					<div class="result" title="<%=seq%>">-</div>\
 					<div class="type"><%=method%></div>\
 					<div class="host"><%=host%></div>\
 					<div class="ip"><%=address%></div>\
-					<div class="url"><%=path%></div>\
+					<div class="url"><a target="_blank" href="<%=path%>"><%=path%></a></div>\
 					',
 			update: function() {
-					
+				var data= this.getData();
+				var result= $D.mini(".result", this.el)[0];
+				if(result) {
+					result.innerHTML= data.code;
+					$D.addClass(result, "code_"+data.code);
+				}
 			},
 		});
         var HttpListModel= $M.extend({
@@ -392,25 +388,43 @@ body {
                 this.feed(data);
             },
             viewObserver: {
-            }
+			},
+			scroll2Bottom: function() {
+				var container= $D.id("dataleft");
+				if(container.scrollHeight-container.scrollTop- container.offsetHeight<30) {
+					container.scrollTop= container.scrollHeight;
+				}
+			}
         });
 		var httpList= new HttpListController({});
 		return {
 			observers: {
 				dispatch: function(data) {
+					if(data=="") {
+						console.info("data empty!");
+						return;
+					}
 					var data= JSON.parse(data);
-					console.info(data);
-					httpList.bite(data);
+					if(data.seq) {
+						console.info(data.seq, data);				
+						httpList.bite(data);
+						httpList.scroll2Bottom();
+					}				
 				}
 			}
 		}
 	
 	};
-
+	var adjustLayout= function() {
+		$D.setStyle($D.id("dataleft"), "height",document.body.scrollHeight-75 + "px");
+		$D.setStyle($D.id("dataleft"), "width",document.body.clientWidth-60 + "px");
+	};
+	window.addEventListener("resize",adjustLayout);
 	window.addEventListener("load",function(){
 		//load module
 		modules.push(dispatcher= dispatcher());
 		modules.push(httpListModule= httpListModule());
+		adjustLayout();
 	});
 </script>
 </html>
