@@ -235,7 +235,7 @@ var sss= net.createServer(function (client)
 sss.maxConnections= 10000;
 sss.listen(process.env.PORT||local_port);
 
-console.log('Proxy server running at localhost:'+local_port);
+console.log('Proxy server running at localhost:'+process.env.PORT||local_port);
 
 
 //处理各种错误
