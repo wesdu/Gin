@@ -23,7 +23,7 @@ https.createServer(options, function (req, res) {
 	//console.info(req.headers);
 
 	var log= function(a,b,c) {
-		if(headers.host== "github.com" && c)
+		if(headers.host== "github.com")
 			console.info(a,b);
 	}
 	
@@ -40,7 +40,6 @@ https.createServer(options, function (req, res) {
 	log(options);
 	//client post
 	req.on("data", function(d) {
-		//backEnd.setKeepAlive(true);
 		log("req", d.toString());
 		backEnd.write(d);
 	});
@@ -87,4 +86,5 @@ https.createServer(options, function (req, res) {
 }).on("connection", function(client) {
 	client.write(new Buffer("HTTP/1.1 200 Connection established\r\nConnection: close\r\n\r\n"));
 }).listen(8433);
+console.info("https server listening on port 8433");
 

@@ -3,7 +3,6 @@ var sys = require('sys');
 var fs = require('fs');
 var websocket= require('./websocket');
 var webserver= require('./webserver');
-var _https= require('./https');
 var tls= require("tls");
 var dns= require('dns');
 var spawn = require('child_process').spawn;
@@ -123,6 +122,7 @@ var sss= net.createServer(function (client)
 			//server.setKeepAlive(true)
 			var connCallBack= function() {
 				console.info("connected!!!");
+				var req2,buffer2= new Buffer(0),isKeepAlive;
 				client.on("data", function(data){
 				   	try {	
 						client.setKeepAlive(true);
@@ -164,6 +164,7 @@ var sss= net.createServer(function (client)
 					*/
 					if (req.method == 'CONNECT') {
 						//字符串化再buffer回来估计导致二进制数据变化了
+						buffer2= buffer_add(buffer2, data);
 					}else {
 						var temp= data.toString("utf8").replace('Proxy-Connection: keep-alive','Connection: keep-alive')
 							.replace(/(http\:\/\/[^\/]*\/)(.* HTTP\/1\.1)/,"/$2");
@@ -172,6 +173,7 @@ var sss= net.createServer(function (client)
 					console.info("request", seq, data);
 					server.write(data);
 				});
+				
 				//client.setKeepAlive(true);
 				server.on("data", function(data){
 					//console.info("response", seq, data.toString());
@@ -188,6 +190,7 @@ var sss= net.createServer(function (client)
 					}
 					try {
 						client.write(data);
+					   	
 					}catch(e) {
 						console.info("ooops", seq);
 						server.removeAllListeners("data");
@@ -196,18 +199,44 @@ var sss= net.createServer(function (client)
 					//client.end();
 					//response= buffer_add(response, data);
 				});
+				var resHeadObj= {};
+				var responseWS= function() {
+					resHeadObj.state= "response";
+					resHeadObj.seq= seq;
+					resHeadObj.head= responseHeader;
+					resHeadObj.body= responseBody;
+					websocket.io(JSON.stringify(resHeadObj));
+				};
 				server.on("end", function() {
+					var pos= buffer_find_body(response);
+					//console.info("end", seq, response.toString())
+					/*
+					responseHeader= response.slice(0, pos);
+					resHeadObj= parse_response(responseHeader);
+					responseHeader= responseHeader.toString("utf8");
+					if(ifGzip(responseHeader)) {
+						unzip(response.slice(pos), function(bin) {
+							responseBody= bin.toString("utf8");
+							responseWS();
+						});
+					}else {
+						responseBody= response.slice(pos).toString("utf8");
+						responseWS();
+					}
+					*/
 					client.end();
+					//client.destory();
 				});
 				client.on("end", function() {
 					console.info("client end", seq);
 				});
 				
+				//client.setKeepAlive(true);
 				client.resume();
 				
 				if (req.method == 'CONNECT') {
-					server.setNoDelay(true);
-
+					//client.write(new Buffer("HTTP/1.1 200 Connection established\r\nConnection: keep-alive\r\n\r\n"));
+					//server.write(buffer);
 				}
 				else {
 					//输出修改后的请求头
@@ -217,11 +246,42 @@ var sss= net.createServer(function (client)
 				}
 				
 			};
-			
-			
+			var connCallBack2= function() {
+				//client.setKeepAlive(true);
+				console.info("connected!!!");
+				var req2,buffer2= new Buffer(0),isKeepAlive;
+				client.on("data", function(data){
+					server.write(data);
+				});
+				server.on("data", function(data){
+					try {
+						client.write(data);
+					   	
+					}catch(e) {
+						console.info("ooops", seq);
+					}
+				});
+				server.on("end", function() {
+					client.end();
+				});
+				client.on("end", function() {
+					console.info("client end", seq);
+				});
+				client.resume();
+				if (req.method == 'CONNECT') {
+					//client.write(new Buffer("HTTP/1.1 200 Connection established\r\nConnection: keep-alive\r\n\r\n"));
+					//server.write(buffer);
+					server.setNoDelay(true);
+				}
+				else {
+					//输出修改后的请求头
+					console.info("header", seq, buffer.toString("utf8"))
+					server.write(buffer);
+				}
+			};	
 			//建立到目标服务器的连接
 			if(req.method == "CONNECT") {
-				var server = net.createConnection(8433,"localhost", connCallBack);
+				var server = net.createConnection(8433,"localhost", connCallBack2);
 				//var server = net.createConnection(req.port,req.host, connCallBack);	
 			}else {
 				var server = net.createConnection(req.port,req.host, connCallBack);
@@ -232,7 +292,7 @@ var sss= net.createServer(function (client)
 			
     }
 });
-sss.maxConnections= 10000;
+sss.maxConnections= 1000;
 sss.listen(local_port);
 
 console.log('Proxy server running at localhost:'+local_port);
