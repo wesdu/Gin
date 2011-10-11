@@ -1,0 +1,23 @@
+A powerful proxy tool by nodejs and html5
+For mac
+author: DuWei
+
+features:
+	1.Proxy
+	3.content recorder, even for https
+	2.Outstream replace
+	3.HTML5 and CSS3 GUI(just test for chrome)
+	4.one button for Proxy switch	
+	
+to run:
+	$openssl genrsa -out d-key.pem 1024
+	$openssl req -new -key d-key.pem -out d-csr.pem
+	$openssl x509 -req -in d-csr.pem -signkey d-key.pem -out d-cert.pem
+	$node frontend_proxy.js
+	
+debug mode:
+	$node frontend_proxy.js -debug
+	
+notice:
+	1.the project is under development, not stable
+	2.you can put the d-cert.pem in the system trusted list to avoid the browser warnning
