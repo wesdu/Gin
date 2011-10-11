@@ -71,7 +71,7 @@ function server_cb(request, response) {
 		resData.body= file.content;
 		//send
 		response.writeHead(statusCode, headers);
-		response.end(new Buffer(file.content), 'binary');
+		response.end(new Buffer(file.content, file.encode), 'binary');
 	}else {
 		var proxy_request = http.request(options);
 		proxy_request.end();

@@ -61,10 +61,19 @@ function getAll(callback) {
 		});
 	}
 }
+var photoType= "|jpg|jpeg|gif|png|bmp|";
+var isPhoto= function(name) {
+	name= "|" + path.extname(name).slice(1) + "|";
+	return name!="||" && photoType.indexOf(name) != -1;
+};
 function file2string(filePath) {
+	var encode= "utf8";
 	var ext= path.extname(filePath).slice(1);
 	var result= "";
-	if(ext == "qzmin") {
+	if(isPhoto(filePath)) {
+		result += fs.readFileSync(filePath).toString("binary");
+		encode= "binary";
+	}else if(ext == "qzmin") {
 		var qzmin= JSON.parse(fs.readFileSync(filePath).toString("utf8"));
 		var fileArray= qzmin.projects[0].include;
 		console.info(fileArray);
@@ -77,9 +86,11 @@ function file2string(filePath) {
 		result += fs.readFileSync(filePath).toString("utf8");
 	}
 	var obj= {
+		encode: encode,
 		type: mime.lookupExtension("."+ext, "text/html"),
 		content: result
 	}
+	console.info(obj);
 	return obj;
 };
 // return file content string

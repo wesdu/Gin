@@ -17,8 +17,8 @@ var files= {
 */
 var photoType= "|jpg|jpeg|gif|png|bmp|";
 var isPhoto= function(name) {
-	name= path.extname(name).slice(1);
-	return name!="" && photoType.indexOf(name) != -1;
+	name= "|" + path.extname(name).slice(1) + "|";
+	return name!="||" && photoType.indexOf(name) != -1;
 };
 var explorer= function(directory, callback) {
 	var result={};

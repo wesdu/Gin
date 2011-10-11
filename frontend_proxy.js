@@ -146,6 +146,7 @@ function buffer_find_body(b)
 
 //duplicate config.js to static file for front end
 spawn('cp', ['./config.js', './public']);
+//spawn('ulimit', ['-n', '10000']);
 
 webserver.router("/", function(req, res) {
 	webserver.staticHandler("/gin.html", req, res);

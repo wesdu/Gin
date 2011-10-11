@@ -13,6 +13,10 @@
     },
     {
         "filePath": "/Users/duwei/project/proxy/public/toolkit.html",
-        "match": "reg:hello\\d.com"
+        "match": "reg:\\dsafe\\.com"
+    },
+    {
+        "filePath": "/Users/duwei/project/proxy/public/onoff.png",
+        "match": "test8.png"
     }
 ]
