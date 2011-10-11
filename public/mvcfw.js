@@ -627,6 +627,9 @@
 				this._queue= [];
 			}
 		},
+		findAll: function() {
+			return this._queue;
+		},
 		key: undefined,
 		groupBy: undefined,
 		find: function(id) {

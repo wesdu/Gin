@@ -1,4 +1,8 @@
+var https= require("https");
+var net= require("net");
 var http= require("http");
+var path= require("path");
+var fs= require("fs");
 var sys= require("sys");
 var config= require("./config");
 var Browser= require("./browser").Browser;
@@ -25,32 +29,31 @@ function upperFirstLetter(headerObj) {
 	}
 	return result;
 }
-function server_cb(request, response) {
+var options = {
+  key: fs.readFileSync(path.resolve(__dirname,'./d-key.pem')),
+  cert: fs.readFileSync(path.resolve(__dirname,'./d-cert.pem'))
+};
+var proxy= https.createServer(options, function (req, res) {
 	var ResponseBufferString= "";
 	var ResponseBuffer= new Buffer(0);
 	var browser= new Browser();
-    var ip = request.connection.remoteAddress;
-    sys.log(ip + ": " + request.method + " " + request.url);
-    var host = request.headers['host'].split(':');
-	var headers= upperFirstLetter(request.headers);
-	if(headers["Proxy-Connection"]) {
-		headers["Connection"]= headers["Proxy-Connection"];
-		delete headers["Proxy-Connection"];
-	}
-	var options= {
-		port: host[1] || 80,
-		host: host[0],
-		method: request.method, 
-		path: request.url.replace(/(http\:\/\/[^\/]*\/)(.*)/,"/$2"), 
-		headers: headers 
+    var ip = req.connection.remoteAddress;
+    sys.log(ip + ": " + req.method + " " + req.url);
+    var host = req.headers['host'].split(':');
+	
+	var headers= req.headers;
+	var options = {
+	  	host: req.headers.host,
+	  	path: req.url,
+	  	method: req.method,
+		headers: upperFirstLetter(headers)
 	};
 	requestDetail[browser.getSeq()]= {};
 	requestDetail[browser.getSeq()].request= {
 		header: headers,
 		body: "",
 	}
-	//if there's a replace rule
-	var file= script.checkRule(request.url);
+	var file= script.checkRule(options.host + options.path);
 	if(file) {
 		var statusCode= 200;
 		browser.io({
@@ -70,57 +73,57 @@ function server_cb(request, response) {
 		resData.header= headers;
 		resData.body= file.content;
 		//send
-		response.writeHead(statusCode, headers);
-		response.end(new Buffer(file.content), 'binary');
+		res.writeHead(statusCode, headers);
+		res.end(new Buffer(file.content), 'binary');
 	}else {
-		var proxy_request = http.request(options);
-		proxy_request.end();
-		proxy_request.addListener('response', function(proxy_response) {
+		req.on("data", function(d) {
+			backEnd.write(d);
+		});
+		req.on("end", function() {
+			backEnd.end();
+		});
+		var backEnd= https.request(options, function(serverResponse) {
 			browser.io({
 				//method: options.method,
 				//host: options.host,
 				//path: options.path,
-				address: proxy_response.client.remoteAddress,
-				code: proxy_response.statusCode
+				address: serverResponse.client.socket.remoteAddress,
+				code: serverResponse.statusCode
 			});
-	        proxy_response.addListener('data', function(chunk) {
+			res.connection.setNoDelay(true);
+			res.writeHead(serverResponse.statusCode, serverResponse.headers);		
+			serverResponse.on('data', function (chunk) {
 				ResponseBuffer= buffer_add(ResponseBuffer, chunk);
 	            ResponseBufferString += chunk.toString("utf8");
-				response.write(chunk, 'binary');
-	        });
-	        proxy_response.addListener('end', function() {
-				//unzip(new Buffer(ResponseBufferString))
+				res.write(chunk);
+			});
+			serverResponse.on('end', function() {
 				var resData= requestDetail[browser.getSeq()].response= {};
-				if(proxy_response.headers["content-encoding"] == "gzip") {
+				if(serverResponse.headers["content-encoding"] == "gzip") {
 					unzip(ResponseBuffer, function(buffer) {
 						resData.body= buffer.toString("utf8");
 					});
 				}else {
 					resData.body= ResponseBufferString;
 				}
-				resData.header= proxy_response.headers;
-	            response.end();
-	        });
-	        response.writeHead(proxy_response.statusCode, proxy_response.headers);
-	    });
-	    request.addListener('data', function(chunk) {
-			console.info("request", chunk.toString("utf8"));
-			requestDetail[browser.getSeq()].request.body += chunk.toString();
-	        proxy_request.write(chunk, 'binary');
-	    });
-	    request.addListener('end', function() {
-	        proxy_request.end();
-	    });
+				resData.header= serverResponse.headers;
+				res.end();
+			});
+			serverResponse.on("error", function() {
+			});
+		});
 	}
 	browser.io({
 		method: options.method,
 		host: options.host,
 		path: options.path
 	});
-
-}
-sys.log("Starting the http backend proxy server on port " + config.http_server_port);
-http.createServer(server_cb).listen(config.http_server_port);
+})
+proxy.on("connection", function(client) {
+	client.write(new Buffer("HTTP/1.1 200 Connection established\r\nConnection: keep-alive\r\n\r\n"));
+});
+proxy.listen(config.https_server_port);
+sys.log("Starting the https backend proxy server on port "+ config.https_server_port);
 
 module.exports= {
 	getDetail: function(seq) {

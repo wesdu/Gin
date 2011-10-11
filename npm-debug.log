@@ -2,95 +2,57 @@ info it worked if it ends with ok
 verbose cli [ 'node',
 verbose cli   '/Users/duwei/local/node/bin/npm',
 verbose cli   'install',
-verbose cli   'http-proxy' ]
+verbose cli   'socket.io' ]
 info using npm@1.0.26
 info using node@v0.5.4
 verbose config file /Users/duwei/.npmrc
 verbose config file /Users/duwei/local/node/etc/npmrc
-silly testEngine { name: 'supervisor',
-silly testEngine   version: '0.1.3',
-silly testEngine   description: 'A supervisor program for running nodejs programs',
-silly testEngine   author: { name: 'Isaac Z. Schlueter', email: 'i@izs.me' },
-silly testEngine   contributors: 
-silly testEngine    [ { name: 'Brian Ehmann', email: 'behmann@gmail.com' },
-silly testEngine      { name: 'David Taylor',
-silly testEngine        email: 'david@zensatellite.com' } ],
-silly testEngine   main: 'lib/supervisor.js',
-silly testEngine   bin: 
-silly testEngine    { 'node-supervisor': 'lib/cli-wrapper.js',
-silly testEngine      supervisor: 'lib/cli-wrapper.js' },
-silly testEngine   engines: { node: '~0.2.3 || 0.3 || 0.4 || 0.5' },
-silly testEngine   preferGlobal: true,
+silly testEngine { name: 'd-proxy',
+silly testEngine   version: '0.0.1',
+silly testEngine   dependencies: {},
 silly testEngine   _npmJsonOpts: 
-silly testEngine    { file: '/Users/duwei/node_modules/supervisor/package.json',
+silly testEngine    { file: '/Users/duwei/project/proxy/package.json',
 silly testEngine      wscript: false,
 silly testEngine      contributors: false,
 silly testEngine      serverjs: false },
-silly testEngine   _id: 'supervisor@0.1.3',
-silly testEngine   dependencies: {},
+silly testEngine   _id: 'd-proxy@0.0.1',
 silly testEngine   devDependencies: {},
+silly testEngine   engines: { node: '*' },
 silly testEngine   _engineSupported: true,
 silly testEngine   _npmVersion: '1.0.26',
 silly testEngine   _nodeVersion: 'v0.5.4',
 silly testEngine   _defaultsLoaded: true }
-verbose caching /Users/duwei/node_modules/supervisor/package.json
-verbose loadDefaults supervisor@0.1.3
-verbose into /Users/duwei [ 'http-proxy' ]
-verbose cache add http-proxy
-verbose cache add [ 'http-proxy', null ]
-silly cache add: name, spec, args [ undefined, 'http-proxy', [ 'http-proxy', null ] ]
-verbose parsed url { pathname: 'http-proxy', href: 'http-proxy' }
-info addNamed [ 'http-proxy', '' ]
+verbose caching /Users/duwei/project/proxy/package.json
+verbose loadDefaults d-proxy@0.0.1
+verbose from cache /Users/duwei/project/proxy/package.json
+verbose into /Users/duwei/project/proxy [ 'socket.io' ]
+verbose cache add socket.io
+verbose cache add [ 'socket.io', null ]
+silly cache add: name, spec, args [ undefined, 'socket.io', [ 'socket.io', null ] ]
+verbose parsed url { pathname: 'socket.io', href: 'socket.io' }
+info addNamed [ 'socket.io', '' ]
 verbose addNamed [ null, '' ]
-verbose GET http-proxy
-verbose raw, before any munging http-proxy
-verbose url resolving [ 'https://registry.npmjs.org/', './http-proxy' ]
-verbose url resolved https://registry.npmjs.org/http-proxy
+verbose GET socket.io
+verbose raw, before any munging socket.io
+verbose url resolving [ 'https://registry.npmjs.org/', './socket.io' ]
+verbose url resolved https://registry.npmjs.org/socket.io
 verbose url parsed { protocol: 'https:',
 verbose url parsed   slashes: true,
 verbose url parsed   host: 'registry.npmjs.org',
 verbose url parsed   hostname: 'registry.npmjs.org',
-verbose url parsed   href: 'https://registry.npmjs.org/http-proxy',
-verbose url parsed   pathname: '/http-proxy' }
-verbose response https://registry.npmjs.org/http-proxy
-silly chunk {"_id":"http-proxy","_rev":"87-56e9961cb417e15f179abfd712f5b52a","name":"http-proxy","description":"A full-featured http reverse proxy for node.js","dist-tags":{"latest":"0.6.2"},"versions":{"0.5.9":{"name":"http-proxy","description":"A full-featured http reverse proxy for node.js","version":"0.5.9","author":{"name":"Charlie Robbins","email":"charlie.robbins@gmail.com"},"contributors":[{"name":"Mikeal Rogers","email":"mikeal.rogers@gmail.com"},{"name":"Marak Squires","email":"marak.squires@gmail.com"},{"name":"Fedor Indutny","email":"fedor.indutny@gmail.com"}],"repository":{"type":"git","url":"git://github.com/nodejitsu/node-http-proxy.git"},"keywords":["reverse","proxy","http"],"dependencies":{"colors":">= 0.x.x","optimist":">= 0.1.x","request":">= 1.9.x"},"devDependencies":{"vows":">= 0.5.x","socket.io":">= 0.6.x","docco":">= 0.3.x"},"main":"./lib/node-http-proxy","bin":{"node-http-proxy":"./bin/node-http-proxy"},"scripts":{"test":"vows test/*-test.js --spec && vows test/*-test.js --spec --https"},"engines":{"node":"0.4.x || 0.5.x"},"_id":"http-proxy@0.5.9","_engineSupported":true,"_npmVersion":"1.0.6","_nodeVersion":"v0.4.8","_defaultsLoaded":true,"dist":{"shasum":"957103fa0515e475f99a2b4c5bfe3507d513a81e","tarball":"http://registry.np
-silly chunk mjs.org/http-proxy/-/http-proxy-0.5.9.tgz"},"directories":{}},"0.5.10":{"name":"http-proxy","description":"A full-featured http reverse proxy for node.js","version":"0.5.10","author":{"name":"Charlie Robbins","email":"charlie.robbins@gmail.com"},"contributors":[{"name":"Mikeal Rogers","email":"mikeal.rogers@gmail.com"},{"name":"Marak Squires","email":"marak.squires@gmail.com"},{"name":"Fedor Indutny","email":"fedor.indutny@gmail.com"}],"repository":{"type":"git","url":"git://github.com/nodejitsu/node-http-proxy.git"},"keywords":["reverse","proxy","http"],"dependencies":{"colors":">= 0.x.x","optimist":">= 0.1.x","request":">= 1.9.x"},"devDependencies":{"vows":">= 0.5.x","socket.io":">= 0.6.x","docco":">= 0.3.x"},"main":"./lib/node-http-proxy","bin":{"node-http-proxy":"./bin/node-http-proxy"},"scripts":{"test":"vows test/*-test.js --spec && vows test/*-test.js --spec --https"},"engines":{"node":"0.4.x || 0.5.x"},"_id":"http-proxy@0.5.10","_engineSupported":true,"_npmVersion":"1.0.10","_nodeVersion":"v0.4.8","_defaultsLoaded":true,"dist":{"shasum":"acd2b9126569dea265fc01bcaca1b2293232067b","tarball":"http://registry.npmjs.org/http-proxy/-/http-proxy-0.5.10.tgz"},"directories":{}},"0.5.11":{"name":"http-proxy","description":"A full-featured http reverse proxy for node.js","version":"0.5.11","author":{"name":"Charlie Robbins","email":"charlie.robbins@gmail.com"},"contributors":[{"name":"Mikeal Rogers","email":"mikeal.rogers@gmail.com"},{"name":"Marak Squires","email":"marak.squires@gmail.com"},{"name":"Fedor Indutny","email":"fedor.indutny@gmail.com"}],"repository":{"type":"git","url":"git://github.com/nodejitsu/node-http-proxy.git"},"keywords":["reverse","proxy","http"],"dependencies":{"colors":"0.x.x","optimist":"0.2.x"},"devDependencies":{"request":"1.9.x","vows":"0.5.x","socket.io":"0.6.x"},"main":"./lib/node-http-proxy","bin":{"node-http-proxy":"./bin/node-http-proxy"},"scripts":{"test":"vows test/*-test.js --spec && vows test/*-test.js --spec --https"},"engines":{"node":"0.4.x || 0.5.x"},"_npmJsonOpts":{"file":"/Users/Charlie/.npm/http-proxy/0.5.11/package/package.json","wscript":false,"contributors":false,"serverjs":false},"_id":"http-proxy@0.5.11","_engineSupported":true,"_npmVersion":"1.0.13","_nodeVersion":"v0.4.8","_defaultsLoaded":true,"dist":{"shasum":"f58f2572765d06c71749b09275b1ba167ffabdf2","tarball":"http://registry.npmjs.org/http-proxy/-/http-proxy-0.5.11.tgz"},"directories":{}},"0.6.0":{"name":"http-proxy","description":"A full-featured http reverse proxy for node.js","version":"0.6.0","author":{"name":"Charlie Robbins","email":"charlie.robbins@gmail.com"},"contributors":[{"name":"Mikeal Rogers","email":"mikeal.rogers@gmail.com"},{"name":"Marak Squires","email":"marak.squires@gmail.com"},{"name":"Fedor Indutny","email":"fedor.indutny@gmail.com"}],"repository":{"type":"git","url":"git://github.com/nodejitsu/node-http-proxy.git"},"keywords":["reverse","pro
-silly chunk xy","http"],"dependencies":{"colors":"0.x.x","optimist":"0.2.x"},"devDependencies":{"request":"1.9.x","vows":"0.5.x","socket.io":"0.6.x"},"main":"./lib/node-http-proxy","bin":{"node-http-proxy":"./bin/node-http-proxy"},"scripts":{"test":"vows test/*-test.js --spec && vows test/*-test.js --spec --https"},"engines":{"node":"0.4.x || 0.5.x"},"_npmJsonOpts":{"file":"/home/dominic/.npm/http-proxy/0.6.0/package/package.json","wscript":false,"contributors":false,"serverjs":false},"_id":"http-proxy@0.6.0","_engineSupported":true,"_npmVersion":"1.0.13","_nodeVersion":"v0.4.8","_defaultsLoaded":true,"dist":{"shasum":"4fbcdc84d01f20c2531f375c437ec619c9e1012c","tarball":"http://registry.npmjs.org/http-proxy/-/http-proxy-0.6.0.tgz"},"directories":{}},"0.6.1":{"name":"http-proxy","description":"A full-featured http reverse proxy for node.js","version":"0.6.1","author":{"name":"Charlie Robbins","email":"charlie.robbins@gmail.com"},"contributors":[{"name":"Mikeal Rogers","email":"mikeal.rogers@gmail.com"},{"name":"Marak Squires","email":"marak.squires@gmail.com"},{"name":"Fedor Indutny","email":"fedor.indutny@gmail.com"}],"repository":{"type":"git","url":"git://github.com/nodejitsu/node-http-proxy.git"},"keywords":["reverse","proxy","http"],"dependencies":{"colors":"0.x.x","optimist":"0.2.x"},"devDependencies":{"request":"1.9.x","vows":"0.5.x","socket.io":"0.6.x"},"main":"./lib/node-http-proxy","bin":{"node-http-proxy":"./bin/node-http-proxy"},"scripts
-silly chunk ":{"test":"vows test/*-test.js --spec && vows test/*-test.js --spec --https"},"engines":{"node":"0.4.x || 0.5.x"},"_npmJsonOpts":{"file":"/home/dominic/.npm/http-proxy/0.6.1/package/package.json","wscript":false,"contributors":false,"serverjs":false},"_id":"http-proxy@0.6.1","_engineSupported":true,"_npmVersion":"1.0.13","_nodeVersion":"v0.4.8","_defaultsLoaded":true,"dist":{"shasum":"0e786540c438fa139781d1b0be3521c3d7c6e728","tarball":"http://registry.npmjs.org/http-proxy/-/http-proxy-0.6.1.tgz"},"maintainers":[{"name":"marak","email":"marak.squires@gmail.com"},{"name":"indexzero","email":"charlie.robbins@gmail.com"},{"name":"dominictarr","email":"dominic.tarr@gmail.com"}],"directories":{}},"0.7.0":{"name":"http-proxy","description":"A full-featured http reverse proxy for node.js","version":"0.7.0","author":{"name":"Charlie Robbins","email":"charlie.robbins@gmail.com"},"contributors":[{"name":"Mikeal Rogers","email":"mikeal.rogers@gmail.com"},{"name":"Marak Squires","email":"marak.squires@gmail.com"},{"name":"Fedor Indutny","email":"fedor.indutny@gmail.com"}],"repository":{"type":"git","url":"git://github.com/nodejitsu/node-http-proxy.git"},"keywords":["reverse","proxy","http"],"dependencies":{"colors":"0.x.x","optimist":"0.2.x"},"devDependencies":{"request":"1.9.x","vows":"0.5.x","socket.io":"0.6.x"},"main":"./lib/node-http-proxy","bin":{"node-http-proxy":"./bin/node-http-proxy"},"scripts":{"test":"vows test/*-test.js --spec && vows t
-silly chunk est/*-test.js --spec --https"},"engines":{"node":"0.4.x || 0.5.x"},"_npmJsonOpts":{"file":"/home/dominic/.npm/http-proxy/0.7.0/package/package.json","wscript":false,"contributors":false,"serverjs":false},"_id":"http-proxy@0.7.0","_engineSupported":true,"_npmVersion":"1.0.13","_nodeVersion":"v0.4.8","_defaultsLoaded":true,"dist":{"shasum":"6195aee435c2fc6cb4a86feeff8db04c59138a03","tarball":"http://registry.npmjs.org/http-proxy/-/http-proxy-0.7.0.tgz"},"maintainers":[{"name":"marak","email":"marak.squires@gmail.com"},{"name":"indexzero","email":"charlie.robbins@gmail.com"},{"name":"dominictarr","email":"dominic.tarr@gmail.com"}],"directories":{}},"0.6.2":{"name":"http-proxy","description":"A full-featured http reverse proxy for node.js","version":"0.6.2","author":{"name":"Charlie Robbins","email":"charlie.robbins@gmail.com"},"contributors":[{"name":"Mikeal Rogers","email":"mikeal.rogers@gmail.com"},{"name":"Marak Squires","email":"marak.squires@gmail.com"},{"name":"Fedor Indutny","email":"fedor.indutny@gmail.com"}],"repository":{"type":"git","url":"git://github.com/nodejitsu/node-http-proxy.git"},"keywords":["reverse","proxy","http"],"dependencies":{"colors":"0.x.x","optimist":"0.2.x"},"devDependencies":{"request":"1.9.x","vows":"0.5.x","socket.io":"0.6.x"},"main":"./lib/node-http-proxy","bin":{"node-http-proxy":"./bin/node-http-proxy"},"scripts":{"test":"vows test/*-test.js --spec && vows test/*-test.js --spec --https"},"engines":{"node":"0.4.x || 0.5.x"},"_npmJsonOpts":{"file":"/home/dominic/.npm/http-proxy/0.6.2/package/package.json","wscript":false,"contributors":false,"serverjs":false},"_id":"http-proxy@0.6.2","_engineSupported":true,"_npmVersion":"1.0.13","_nodeVersion":"v0.4.10","_defaultsLoaded":true,"dist":{"shasum":"5114c56b4cf6dbe33094d6f0bbcb79d757210708","tarball":"http://registry.npmjs.org/http-proxy/-/http-proxy-0.6.2.tgz"},"maintainers":[{"name":"marak","email":"marak.squires@gmail.com"},{"name":"indexzero","email":"charlie.robbins@gmail.com"},{"name":"dominictarr","email":"dominic.tarr@gmail.com"}],"directories":{}}},"maintainers":[{"name":"marak","email":"marak.squires@gmail.com"},{"name":"indexzero","email":"charlie.robbins@gmail.com"},{"name":"dominictarr","email":"dominic.tarr@gmail.com"}],"author":{"name":"Charlie Robbins","email":"charlie.robbins@gmail.com"},"repository":{"type":"git","url":"git://github.com/nodejitsu/node-http-proxy.git"},"time":{"0.5.9":"2011-05-23T06:19:07.714Z","0.5.10":"2011-06-13T06:53:20.983Z","0.5.11":"2011-06-26T17:26:08.499Z","0.6.0":"2011-07-26T01:21:02.357Z","0.6.1":"2011-08-02T14:08:09.011Z","0.7.0":"2011-08-04T13:00:37.432Z","0.6.2":"2011-08-09T10:35:13.520Z"}}
-silly get cb [ 200,
-silly get cb   { vary: 'Accept',
-silly get cb     server: 'CouchDB/1.1.0 (Erlang OTP/R14B03)',
-silly get cb     etag: '"CXB00BIPVDONL1S10TNW0JUZX"',
-silly get cb     date: 'Tue, 23 Aug 2011 01:59:09 GMT',
-silly get cb     'content-type': 'application/json',
-silly get cb     'content-length': '9758' } ]
-verbose mkdir (expected) error ENOENT, No such file or directory '/Users/duwei/.npm/http-proxy'
-verbose mkdir done: /Users/duwei/.npm/http-proxy 755
-verbose GET http-proxy/0.6.2
-verbose raw, before any munging http-proxy/0.6.2
-verbose url resolving [ 'https://registry.npmjs.org/',
-verbose url resolving   './http-proxy/0.6.2' ]
-verbose url resolved https://registry.npmjs.org/http-proxy/0.6.2
-verbose url parsed { protocol: 'https:',
-verbose url parsed   slashes: true,
-verbose url parsed   host: 'registry.npmjs.org',
-verbose url parsed   hostname: 'registry.npmjs.org',
-verbose url parsed   href: 'https://registry.npmjs.org/http-proxy/0.6.2',
-verbose url parsed   pathname: '/http-proxy/0.6.2' }
-ERR! Error: socket hang up
-ERR!     at CleartextStream.<anonymous> (http2.js:1146:25)
-ERR!     at CleartextStream.emit (events.js:88:20)
-ERR!     at Array.0 (tls.js:668:22)
-ERR!     at EventEmitter._tickCallback (node.js:197:26)
+verbose url parsed   href: 'https://registry.npmjs.org/socket.io',
+verbose url parsed   pathname: '/socket.io' }
+ERR! Error: ETIMEDOUT, Operation timed out
+ERR!     at Socket._onConnect (net_legacy.js:606:18)
+ERR!     at IOWatcher.onWritable [as callback] (net_legacy.js:186:12)
 ERR! Report this *entire* log at:
 ERR!     <http://github.com/isaacs/npm/issues>
 ERR! or email it to:
 ERR!     <npm-@googlegroups.com>
 ERR! 
 ERR! System Darwin 10.8.0
-ERR! command "node" "/Users/duwei/local/node/bin/npm" "install" "http-proxy"
+ERR! command "node" "/Users/duwei/local/node/bin/npm" "install" "socket.io"
 ERR! cwd /Users/duwei/project/proxy
 ERR! node -v v0.5.4
 ERR! npm -v 1.0.26
-verbose exit [ 1, true ]
+verbose exit [ 60, true ]

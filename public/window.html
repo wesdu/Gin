@@ -1,0 +1,568 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" /> 
+	<title>Gin</title>
+	<!--
+	<script src="mvcfw.js"></script>
+	<link type="text/css" rel="stylesheet" href="style.css" />
+	-->
+	<style>
+html{
+	_background:url(./jet.fix);  /* 阻止闪动 in IE6 */
+}
+input {
+	outline:none;
+}
+
+/*
+	TODO remove settings on BODY since we can't namespace it.
+*/
+/*
+	TODO test putting a class on HEAD.
+		- Fails on FF. 
+*/
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+code,
+form,
+fieldset,
+legend,
+input,
+textarea,
+p,
+blockquote,
+th,
+td {
+	margin:0;
+	padding:0;
+}
+body{
+	line-height: 1.5;
+}
+table {
+	border-collapse:collapse;
+	border-spacing:0;
+}
+fieldset,
+img {
+	border:0;
+}
+/*
+	TODO think about hanlding inheritence differently, maybe letting IE6 fail a bit...
+*/
+address,
+caption,
+cite,
+code,
+dfn,
+em,
+strong,
+th,
+var {
+	font-style:normal;
+	font-weight:normal;
+}
+
+code,
+kbd,
+samp,
+tt{
+	font-size: 100%;
+}
+
+
+/*
+	TODO Figure out where this list-style rule is best set. Hedger has a request to investigate.
+*/
+ol,
+ul {
+	list-style:none;
+}
+
+caption,
+th {
+	text-align:left;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-size:100%;
+	font-weight:normal;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+	content: '';
+	content: none;
+}
+
+a:link,
+a:visited {
+	text-decoration: none;
+	color:#2D67C1;
+}
+
+/* remember to define focus styles! 
+:focus {
+	outline: 0;
+}
+*/
+
+abbr,
+acronym {
+	border:0;
+	font-variant:normal;
+}
+/* to preserve line-height and selector appearance */
+sup {
+	font-size: 100%;
+	vertical-align:text-top;
+}
+sub {
+	font-size: 100%;
+	vertical-align:text-bottom;
+}
+input,
+textarea,
+select {
+	font-family:inherit;
+	font-size:inherit;
+	font-weight:inherit;
+}
+/*to enable resizing for IE*/
+input,
+textarea,
+select {
+	*font-size:100%;
+}
+/*because legend doesn't inherit in IE */
+legend {
+	color:#000;
+}
+body {
+	font: 12px/1.5 tahoma, helvetica, clean, sans-serif;
+	color: #333;
+	cursor: default;
+}
+	.head{
+		height: 30px;
+		top:0;
+		left: 20px;
+		right:20px;
+		background: #111;
+		background: -webkit-gradient(linear,left top,left bottom,from(#333),to(#111));
+		background: -moz-linear-gradient(top,#333,#111);
+		background: transparent	9;
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#333',endColorstr='#111');
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+		-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+		-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+		border-bottom-right-radius: 4px 4px;
+		border-bottom-left-radius: 4px 4px;
+	}
+	.content{
+		position:absolute;
+		top:32px;
+		bottom:30px;
+		left:30px;
+		right:30px;
+		border-bottom-right-radius: 4px 4px;
+		border-bottom-left-radius: 4px 4px;
+		overflow-y:auto;
+		overflow-x:hidden;
+	}
+	.head .title{
+		color:#F9F9F9;
+		height:30px;
+		line-height:30px;
+		margin-left:30px;
+		cursor:pointer;
+	}
+	.datahead{
+		padding-left:10px;
+		padding-right:10px;
+	}
+	.data{
+	/*
+		display:-webkit-box;
+		-webkit-box-align:stretch;
+		-webkit-box-orient:horizontal; */
+		left:20px;
+		right:20px;
+		top:30px;
+		bottom:20px;
+	}
+	.dataleft, .dataright{
+		position:relative;
+		margin-top:10px;
+		/* -webkit-box-flex:1; */
+		overflow-x:hidden;
+		width: 400px;
+		height: 400px;
+		float:left;
+	}
+	.dataright{
+		display:block;
+	}
+	.dataflow{
+		position:relative;
+		background:#fff;
+		overflow-y:auto;
+		border-radius: 4px 4px;
+		padding:0px 10px 10px 10px;
+	}
+	.datahead .flowitem div{
+		background: -webkit-gradient(linear,left top,left bottom,from(#333),to(#111));
+		color:#fff;
+	}
+	.flowitem{
+		display:-webkit-box;
+		-webkit-box-align:stretch;
+		-webkit-box-orient:horizontal;
+		height:30px;
+		line-height:30px;
+	}
+	.dataflow .flowitem:hover > div{
+		background:#fff;
+		color: black;
+		border-color:#fff;
+	}
+	.result, .type, .ip, .host, .url{
+		text-align:center;
+		height:20px;
+		line-height:20px;
+		border:1px solid #9CC2EF;
+		border-radius: 4px 4px;
+		color: #707070;
+		margin-right:5px;
+		cursor:pointer;
+		background:#F1F7FF;
+	}
+	.result, .type, .host{
+		width:50px;
+	}
+	.ip {
+		width:100px;
+	}
+	.host {
+		width:150px;
+	}
+	.url {
+		-webkit-box-flex:1;
+		text-align:left;
+		text-indent:20px;
+	}
+	.code_200{
+		color:#FAFAFA;
+		background:green;
+	}
+	.code_404{
+		color:#FAFAFA;
+		background:red;
+	}
+	.code_500{
+		color:#FAFAFA;
+		background:black;
+	}
+	.detailbox{
+		position:absolute;
+		left:0px;
+		top:0px;
+		bottom:0px;
+		right:0px;
+	}
+	.boxlayout{
+	
+	}
+	.boxlayout .box{
+		background-color: #F1F7FF;
+		border:1px solid #9CC2EF;
+		border-radius:3px;
+		box-shadow:1px 1px 1px #9CC2EF;
+		margin-right:1px;
+		margin-bottom:1px;
+	}
+	.boxlayout .box .toolbar, .boxlayout .box .lable{
+		height: 24px;
+		background: #9CC2EF;
+		cursor: pointer;
+	}
+
+	.boxlayout .box .lable{
+		line-height:24px;
+		background: #F1F7FF;
+		color:#3072FE;
+		border-bottom:1px solid #fff;
+		border-right:1px solid #fff;
+		border-top:1px solid #fff;
+	}
+	.boxlayout .box .lable span{
+		float:left;
+		margin-right:10px;
+	}
+	.boxlayout .box .lable .button{
+		position:relative;
+		width:60px;
+		height:21px;
+		background:white;
+		border:1px solid #9CC2EF;
+		border-top-left-radius: 3px;
+		border-top-right-radius: 3px;
+		float:left;
+		margin-top:3px;
+		margin-right:5px;
+		text-align:center;
+		line-height:22px;
+	}
+	.boxlayout .box .lable .selected{
+		border-bottom:none;
+		height:22px;
+	}
+	.boxlayout .box .bodywrap{
+		border-top:1px solid #9CC2EF;
+		border-bottom:1px solid #9CC2EF;
+	}
+	.boxlayout .box .bodywrap .body{
+		overflow-x: auto;
+		padding-left:10px;
+		padding-right:10px;
+	}
+	.boxlayout .box .bodywrap .text{
+		white-space:pre-line;
+	}
+	.boxlayout .box .content .bodywrap:last-child{
+		border-bottom: none;
+	}
+	.boxlayout .box .toolbar .buttons{
+		height:16px;
+		padding-top:3px;
+		float:right;
+	}
+	.boxlayout .box .pop{
+		background:url(arrow.png) no-repeat -120px -80px;
+	}
+	.boxlayout .box .push{
+		background:url(arrow.png) no-repeat -140px -80px;
+	}
+	.boxlayout .box .close{
+		background:url(arrow.png) no-repeat -40px -80px;
+	}
+	.boxlayout .box .toolbar .button{
+		height:16px;
+		width:16px;
+		line-height:16px;
+		font-size:16px;
+		float:left;
+		color:white;
+		font-weight:bold;
+		margin-left:3px;
+	}
+	.boxlayout .box .toolbar .button:hover{
+		background-color:#3072FE;
+	}
+	.boxlayout .box .content{
+		overflow:auto;
+		background:white;
+		position:absolute;
+		bottom:0px;
+		top:24px;
+		left:0px;
+		right:0px;
+	}
+	.boxlayout .box .body span{
+		float:left;
+		margin-right:10px;
+	}
+	.boxlayout .box .body .on{
+		background-color:#9CC2EF;
+	}
+	.boxlayout .box .body .off{
+		
+	}
+	.boxlayout .box .body .switcher{
+		width:60px;
+		height:20px;
+		border:1px solid #9CC2EF;
+		float:left;
+		border-radius:5px;
+		cursor:pointer;
+	}
+	.boxlayout .box .body .switcher .trigger{
+		position:relative;
+		width:30px;
+		height:18px;
+		border:1px solid #9CC2EF;
+		float:left;
+		border-radius:5px;
+		background:
+	}
+	.boxlayout .box .body .on .trigger{
+		margin-left:28px;
+		background:white;
+	}
+	.boxlayout .box .body li{
+		height:24px;
+		line-height:24px;
+	}
+	.host_head, .host_item{
+		display:-webkit-box;
+		-webkit-box-align:stretch;
+		-webkit-box-orient:horizontal;
+		margin-top:5px;
+	}
+	.host_head .item, .host_item .item{
+		-webkit-box-flex:1;
+		height:24px;
+		background:#9CC2EF;
+		cursor:text;
+		position:relative;
+	}
+	.rule_head .item{
+		height:60px;
+	}
+	.host_item .item{
+		border:1px solid #9CC2EF;
+		background:#fff;
+	}
+	.host_head .left, .host_item .left{
+		border-right:1px dashed #F1F7FF;;
+		border-top-left-radius:5px;
+		border-bottom-left-radius:5px;
+	}
+	.host_head .right, .host_item .right{
+		margin-right:3px;
+		border-top-right-radius:5px;
+		border-bottom-right-radius:5px;
+	}
+	.host_head .item input, .host_item .item input{
+		border:none;
+		outline:none;
+		background: transparent;
+		color:white;
+		height:24px;
+		line-height:24px;
+		position:absolute;
+		left:10px;
+		right:0px;
+		top:0px;
+	}
+	.host_item .item input{
+		color: #7e7e7e;
+		
+	}
+	.host_head .item input::-webkit-input-placeholder{
+		color: #fff;
+		font-size:16px;
+		line-height:24px;
+	}
+	.host_head .plus,.host_item .minus{
+		height:24px;
+		width:24px;
+		background:#9CC2EF;
+		border-radius:5px;
+		color:white;
+		font-size:20px;
+		line-height:22px;
+		font-weight:bold;
+		border-radius:24px;
+		text-align:center;
+		cursor:pointer;
+	}
+	</style>
+</head> 
+<body>
+	<div class="boxlayout">
+				<div class="box detailbox">
+					<div class="toolbar">
+						<div class="buttons">
+							<div id="push" class="button push"></div>
+							<div class="button pop" style="display:none;"></div>
+							<div class="button close"></div>
+						</div>
+					</div>
+					<div class="content">
+						<div class="lable">
+							<span>DashBoard</span>
+							<div class="button ">global</div>
+							<div class="button selected">rule</div>
+							<div class="button">host</div>
+						</div>
+						<div class="bodywrap">
+							<div class="body">
+								<div id="rule_head" class="host_head">
+									<div class="item left"><input placeholder="match" /></div>
+									<div class="item right" id="file_pad"><input id="file" type="file" placeholder="file" multiple/></div>
+									<div class="plus">+</div>
+								</div>
+								<div class="host_item">
+									<div class="item left"><input value="qq.com" /></div>
+									<div class="item right"><input value="/public/test.html" /></div>
+									<div class="minus">-</div>
+								</div>
+								<div class="host_item">
+									<div class="item left"><input value="web2.qq.com" /></div>
+									<div class="item right"><input value="/public/test2.html" /></div>
+									<div class="minus">-</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+	</div>
+	
+</body>
+<script>
+var id= function(id) {
+	return document.getElementById(id);
+}
+
+var push= id("push");
+var file= id("file");
+file.onchange= function() {
+	console.info(file.value);
+}
+var rule_head= id("rule_head");
+var file_pad= id("file_pad");
+document.body.ondragenter= function() {
+	var classname= rule_head.className;
+	if(classname.indexOf("rule_head") == -1) {
+		rule_head.className= classname+ " rule_head";
+	}
+}
+document.body.ondragover= function (e) {
+	e.preventDefault();
+	return false;
+};
+file_pad.ondrop= function(e) {
+	e.preventDefault();
+	//console.info(e.dataTransfer.files);
+}
+push.onclick= function() {
+	opener.push();
+}
+window.onunload= function() {
+	opener.push();
+}
+</script>
+</html>

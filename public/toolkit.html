@@ -1,0 +1,810 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" /> 
+	<title>Gin</title>
+	<!--
+	<script src="mvcfw.js"></script>
+	<link type="text/css" rel="stylesheet" href="style.css" />
+	-->
+	<style>
+html{
+	_background:url(./jet.fix);  /* 阻止闪动 in IE6 */
+}
+input {
+	outline:none;
+}
+
+/*
+	TODO remove settings on BODY since we can't namespace it.
+*/
+/*
+	TODO test putting a class on HEAD.
+		- Fails on FF. 
+*/
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+code,
+form,
+fieldset,
+legend,
+input,
+textarea,
+p,
+blockquote,
+th,
+td {
+	margin:0;
+	padding:0;
+}
+body{
+	line-height: 1.5;
+}
+table {
+	border-collapse:collapse;
+	border-spacing:0;
+}
+fieldset,
+img {
+	border:0;
+}
+/*
+	TODO think about hanlding inheritence differently, maybe letting IE6 fail a bit...
+*/
+address,
+caption,
+cite,
+code,
+dfn,
+em,
+strong,
+th,
+var {
+	font-style:normal;
+	font-weight:normal;
+}
+
+code,
+kbd,
+samp,
+tt{
+	font-size: 100%;
+}
+
+
+/*
+	TODO Figure out where this list-style rule is best set. Hedger has a request to investigate.
+*/
+ol,
+ul {
+	list-style:none;
+}
+
+caption,
+th {
+	text-align:left;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-size:100%;
+	font-weight:normal;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+	content: '';
+	content: none;
+}
+
+a:link,
+a:visited {
+	text-decoration: none;
+	color:#2D67C1;
+}
+
+/* remember to define focus styles! 
+:focus {
+	outline: 0;
+}
+*/
+
+abbr,
+acronym {
+	border:0;
+	font-variant:normal;
+}
+/* to preserve line-height and selector appearance */
+sup {
+	font-size: 100%;
+	vertical-align:text-top;
+}
+sub {
+	font-size: 100%;
+	vertical-align:text-bottom;
+}
+input,
+textarea,
+select {
+	font-family:inherit;
+	font-size:inherit;
+	font-weight:inherit;
+}
+/*to enable resizing for IE*/
+input,
+textarea,
+select {
+	*font-size:100%;
+}
+/*because legend doesn't inherit in IE */
+legend {
+	color:#000;
+}
+body {
+	font: 12px/1.5 tahoma, helvetica, clean, sans-serif;
+	color: #333;
+	cursor: default;
+}
+	.head{
+		height: 30px;
+		top:0;
+		left: 20px;
+		right:20px;
+		background: #111;
+		background: -webkit-gradient(linear,left top,left bottom,from(#333),to(#111));
+		background: -moz-linear-gradient(top,#333,#111);
+		background: transparent	9;
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#333',endColorstr='#111');
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+		-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+		-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+		border-bottom-right-radius: 4px 4px;
+		border-bottom-left-radius: 4px 4px;
+	}
+	.content{
+		position:absolute;
+		top:32px;
+		bottom:30px;
+		left:30px;
+		right:30px;
+		border-bottom-right-radius: 4px 4px;
+		border-bottom-left-radius: 4px 4px;
+		overflow-y:auto;
+		overflow-x:hidden;
+	}
+	.head .title{
+		color:#F9F9F9;
+		height:30px;
+		line-height:30px;
+		margin-left:30px;
+		cursor:pointer;
+	}
+	.datahead{
+		padding-left:10px;
+		padding-right:10px;
+	}
+	.data{
+	/*
+		display:-webkit-box;
+		-webkit-box-align:stretch;
+		-webkit-box-orient:horizontal; */
+		left:20px;
+		right:20px;
+		top:30px;
+		bottom:20px;
+	}
+	.dataleft, .dataright{
+		position:relative;
+		margin-top:10px;
+		/* -webkit-box-flex:1; */
+		overflow-x:hidden;
+		width: 400px;
+		height: 400px;
+		float:left;
+	}
+	.dataright{
+		display:block;
+	}
+	.dataflow{
+		position:relative;
+		background:#fff;
+		overflow-y:auto;
+		border-radius: 4px 4px;
+		padding:0px 10px 10px 10px;
+	}
+	.datahead .flowitem div{
+		background: -webkit-gradient(linear,left top,left bottom,from(#333),to(#111));
+		color:#fff;
+	}
+	.flowitem{
+		display:-webkit-box;
+		-webkit-box-align:stretch;
+		-webkit-box-orient:horizontal;
+		height:30px;
+		line-height:30px;
+	}
+	.dataflow .flowitem:hover > div{
+		background:#fff;
+		color: black;
+		border-color:#fff;
+	}
+	.result, .type, .ip, .host, .url{
+		text-align:center;
+		height:20px;
+		line-height:20px;
+		border:1px solid #9CC2EF;
+		border-radius: 4px 4px;
+		color: #707070;
+		margin-right:5px;
+		cursor:pointer;
+		background:#F1F7FF;
+	}
+	.result, .type, .host{
+		width:50px;
+	}
+	.ip {
+		width:100px;
+	}
+	.host {
+		width:150px;
+	}
+	.url {
+		-webkit-box-flex:1;
+		text-align:left;
+		text-indent:20px;
+	}
+	.code_200{
+		color:#FAFAFA;
+		background:green;
+	}
+	.code_404{
+		color:#FAFAFA;
+		background:red;
+	}
+	.code_500{
+		color:#FAFAFA;
+		background:black;
+	}
+	.detailbox{
+		position:absolute;
+		left:0px;
+		top:0px;
+		bottom:0px;
+		right:0px;
+	}
+	.boxlayout{
+	
+	}
+	.boxlayout .box{
+		background-color: #F1F7FF;
+		border:1px solid #9CC2EF;
+		border-radius:3px;
+		box-shadow:1px 1px 1px #9CC2EF;
+		margin-right:1px;
+		margin-bottom:1px;
+	}
+	.boxlayout .box .toolbar, .boxlayout .box .lable{
+		height: 24px;
+		background: #9CC2EF;
+		cursor: pointer;
+	}
+
+	.boxlayout .box .lable{
+		line-height:24px;
+		background: #F1F7FF;
+		color:#3072FE;
+		border-bottom:1px solid #fff;
+		border-right:1px solid #fff;
+		border-top:1px solid #fff;
+	}
+	.boxlayout .box .lable span{
+		float:left;
+		margin-right:10px;
+	}
+	.boxlayout .box .lable .button{
+		position:relative;
+		width:60px;
+		height:21px;
+		background:white;
+		border:1px solid #9CC2EF;
+		border-top-left-radius: 3px;
+		border-top-right-radius: 3px;
+		float:left;
+		margin-top:3px;
+		margin-right:5px;
+		text-align:center;
+		line-height:22px;
+	}
+	.boxlayout .box .lable .selected{
+		border-bottom:none;
+		height:22px;
+	}
+	.boxlayout .box .bodywrap{
+		border-top:1px solid #9CC2EF;
+		border-bottom:1px solid #9CC2EF;
+	}
+	.boxlayout .box .bodywrap .body{
+		overflow-x: auto;
+		padding-left:10px;
+		padding-right:10px;
+	}
+	.boxlayout .box .bodywrap .text{
+		white-space:pre-line;
+	}
+	.boxlayout .box .content .bodywrap:last-child{
+		border-bottom: none;
+	}
+	.boxlayout .box .toolbar .buttons{
+		height:16px;
+		padding-top:3px;
+		float:right;
+	}
+	.boxlayout .box .pop{
+		background:url(arrow.png) no-repeat -120px -80px;
+	}
+	.boxlayout .box .push{
+		background:url(arrow.png) no-repeat -140px -80px;
+	}
+	.boxlayout .box .close{
+		background:url(arrow.png) no-repeat -40px -80px;
+	}
+	.boxlayout .box .toolbar .button{
+		height:16px;
+		width:16px;
+		line-height:16px;
+		font-size:16px;
+		float:left;
+		color:white;
+		font-weight:bold;
+		margin-left:3px;
+	}
+	.boxlayout .box .toolbar .button:hover{
+		background-color:#3072FE;
+	}
+	.boxlayout .box .content{
+		overflow:auto;
+		background:white;
+		position:absolute;
+		bottom:0px;
+		top:24px;
+		left:0px;
+		right:0px;
+	}
+	.boxlayout .box .body span{
+		float:left;
+		margin-right:10px;
+	}
+	.boxlayout .box .body .switcher{
+		position:relative;
+		height:20px;
+		border:1px solid #9CC2EF;
+		float:left;
+		border-radius:5px;
+		cursor:pointer;
+		background-color:#9CC2EF;
+		-webkit-background-clip:content;
+		width:30px;
+		padding-right:30px;
+	}
+	.boxlayout .box .body .switcher .trigger{
+		position:relative;
+		width:30px;
+		height:18px;
+		border:1px solid #9CC2EF;
+		background:white;
+		float:left;
+		border-radius:5px;
+		-webkit-transition-property:margin-left;
+		-webkit-transition-duration:0.5s;
+	}
+	.boxlayout .box .body .on .trigger{
+		margin-left:28px;
+		background:white;
+	}
+	.boxlayout .box .body li{
+		height:24px;
+		line-height:24px;
+	}
+	.host_head, .host_item{
+		display:-webkit-box;
+		-webkit-box-align:stretch;
+		-webkit-box-orient:horizontal;
+		margin-top:5px;
+	}
+	.host_head .item, .host_item .item{
+		-webkit-box-flex:1;
+		height:24px;
+		background:#9CC2EF;
+		cursor:text;
+		position:relative;
+	}
+	.rule_head .item{
+		height:60px;
+	}
+	.host_item .item{
+		border:1px solid #9CC2EF;
+		background:#fff;
+	}
+	.host_head .left, .host_item .left{
+		border-right:1px dashed #F1F7FF;;
+		border-top-left-radius:5px;
+		border-bottom-left-radius:5px;
+	}
+	.host_head .right, .host_item .right{
+		margin-right:3px;
+		border-top-right-radius:5px;
+		border-bottom-right-radius:5px;
+	}
+	.host_head .item input, .host_item .item input{
+		border:none;
+		outline:none;
+		background: transparent;
+		color:white;
+		height:24px;
+		line-height:24px;
+		position:absolute;
+		left:10px;
+		right:0px;
+		top:0px;
+	}
+	.host_item .item input{
+		color: #7e7e7e;
+		
+	}
+	.host_head .item input::-webkit-input-placeholder{
+		color: #fff;
+		font-size:16px;
+		line-height:24px;
+	}
+	.host_head .plus,.host_item .minus{
+		height:24px;
+		width:24px;
+		background:#9CC2EF;
+		border-radius:5px;
+		color:white;
+		font-size:20px;
+		line-height:22px;
+		font-weight:bold;
+		border-radius:24px;
+		text-align:center;
+		cursor:pointer;
+	}
+	</style>
+</head> 
+<body>
+	<div class="head">
+		<div class="title">Project Gin</div>
+	</div>
+	<div class="content boxlayout">
+		<div class="data">
+			<div class="dataleft" style="display:none;">
+				<div class="datahead">
+					<div class="flowitem">
+						<div class="result">code</div>
+						<div class="type">type</div>
+						<div class="host">host</div>
+						<div class="ip">ip</div>
+						<div class="url">path</div>
+					</div>
+				</div>
+				<div class="dataflow">
+					<div class="flowitem">
+						<div class="result code_200">200</div>
+						<div class="type">GET</div>
+						<div class="host">www.qq.com</div>
+						<div class="ip">169.255.255.254</div>
+						<div class="url">/hello/hi/main.js</div>
+					</div>
+					<div class="flowitem">
+						<div class="result code_200">200</div>
+						<div class="type">GET</div>
+						<div class="host">www.qq.com</div>
+						<div class="ip">127.0.0.1</div>
+						<div class="url">/hello/hi/main.js</div>
+					</div>
+					<div class="flowitem">
+						<div class="result code_404">404</div>
+						<div class="type">GET</div>
+						<div class="host">www.qq.com</div>
+						<div class="ip">127.0.0.1</div>
+						<div class="url">/hello/hi/main.js</div>
+					</div>
+					<div class="flowitem">
+						<div class="result code_200">200</div>
+						<div class="type">GET</div>
+						<div class="host">www.qq.com</div>
+						<div class="ip">127.0.0.1</div>
+						<div class="url">/hello/hi/main.js</div>
+					</div>
+					<div class="flowitem">
+						<div class="result code_200">200</div>
+						<div class="type">GET</div>
+						<div class="host">www.qq.com</div>
+						<div class="ip">169.255.255.254</div>
+						<div class="url">/hello/hi/main.js</div>
+					</div>
+					<div class="flowitem">
+						<div class="result code_200">200</div>
+						<div class="type">GET</div>
+						<div class="host">www.qq.com</div>
+						<div class="ip">127.0.0.1</div>
+						<div class="url">/hello/hi/main.js</div>
+					</div>
+					<div class="flowitem">
+						<div class="result code_404">404</div>
+						<div class="type">GET</div>
+						<div class="host">www.qq.com</div>
+						<div class="ip">127.0.0.1</div>
+						<div class="url">/hello/hi/main.js</div>
+					</div>
+					<div class="flowitem">
+						<div class="result">304</div>
+						<div class="type">GET</div>
+						<div class="host">www.qq.com</div>
+						<div class="ip">127.0.0.1</div>
+						<div class="url">/hello/hi/main.js</div>
+					</div>
+					<div class="flowitem">
+						<div class="result code_200">200</div>
+						<div class="type">GET</div>
+						<div class="host">www.qq.com</div>
+						<div class="ip">169.255.255.254</div>
+						<div class="url">/hello/hi/main.js</div>
+					</div>
+					<div class="flowitem">
+						<div class="result code_500">500</div>
+						<div class="type">GET</div>
+						<div class="host">www.qq.com</div>
+						<div class="ip">127.0.0.1</div>
+						<div class="url">/hello/hi/main.js</div>
+					</div>
+					<div class="flowitem">
+						<div class="result">-</div>
+						<div class="type">POST</div>
+						<div class="host">www.qq.com</div>
+						<div class="ip">127.0.0.1</div>
+						<div class="url">/hello/hi/main.js</div>
+					</div>
+				</div>
+			</div>
+			<div class="dataright">
+				<div class="box detailbox">
+					<div class="toolbar">
+						<div class="buttons">
+							<div class="button push" style="display:none;"></div>
+							<div class="button pop"></div>
+							<div class="button close"></div>
+						</div>
+					</div>
+					<div class="content">
+						<div class="lable">
+							<span>REQUEST</span>
+							<div class="button selected">head</div>
+							<div class="button">body</div>
+						</div>
+						<div class="bodywrap">
+							<div class="body text">GET http://web2.qq.com/ HTTP/1.1
+								Host: web2.qq.com
+								Connection: keep-alive
+								User-Agent: Mozilla/5.0 (Windows NT 5.1) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.782.220 Safari/535.1
+								Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+								Accept-Encoding: gzip,deflate,sdch
+								Accept-Language: zh-CN,zh;q=0.8
+								Accept-Charset: GBK,utf-8;q=0.7,*;q=0.3
+								Cookie: pgv_pvid=3487280700; pgv_info=ssid=s3601769025&pgvReferrer=; o_cookie=414912; pt2gguin=o0000414912; uin=o0000414912; skey=@VQbh3uaOL; qm_sid=7d81931b9c3fe95b2202be504bae6b8f,1QFZRYmgzdWFPTA..; qm_username=414912; qm_domain=http://m640.mail.qq.com; qm_qz_key=1_86d32bc4983a627e7844a3a9679309fa010a0902050302010606; ptisp=ctc; qm_sk=414912&W-PT5vNw; qm_ssum=414912&98fd46cde67149369f5e0a44b876f9d8
+								If-Modified-Since: Thu, 01 Sep 2011 08:57:37 GMT
+							</div>
+						</div>
+						<div class="lable">
+							<span>RESPONSE</span>
+							<div class="button selected">head</div>
+							<div class="button ">body</div>
+						</div>
+						<div class="bodywrap">
+							<div class="body text">HTTP/1.1 200 OK
+Server: Apache-Coyote/1.1
+Content-Type: application/json;charset=utf-8
+Content-Length: 1202
+Date: Wed, 07 Sep 2011 03:42:27 GMT
+Connection: close
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="dataright" style="margin-left:20px">
+				<div class="box detailbox">
+					<div class="toolbar">
+						<div class="buttons">
+							<div class="button push" style="display:none;"></div>
+							<div class="button pop"></div>
+							<div class="button close"></div>
+						</div>
+					</div>
+					<div class="content">
+						<div class="lable">
+							<span>DashBoard</span>
+							<div class="button selected">global</div>
+							<div class="button">rule</div>
+							<div class="button">host</div>
+						</div>
+						<div class="bodywrap">
+							<div class="body">
+								<br/>
+								<h2>Only for mac OSX</h2>
+								<br/>
+								<ul>
+									<li><span>Airport</span><div id="switcher" class="switcher on"><div class="trigger"></div></div></li>
+									<br/>
+									<li><span>Ethernet</span><div class="switcher off"><div class="trigger"></div></div></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="rule" class="dataright" style="margin-left:20px">
+				<div class="box detailbox">
+					<div class="toolbar">
+						<div class="buttons">
+							<div class="button push" style="display:none;"></div>
+							<div id="pop" class="button pop"></div>
+							<div class="button close"></div>
+						</div>
+					</div>
+					<div class="content">
+						<div class="lable">
+							<span>DashBoard</span>
+							<div class="button ">global</div>
+							<div class="button selected">rule</div>
+							<div class="button">host</div>
+						</div>
+						<div class="bodywrap">
+							<div class="body">
+								<div id="rule_head" class="host_head">
+									<div class="item left"><input placeholder="match" /></div>
+									<div class="item right" id="file_pad"><input id="file" type="file" placeholder="file" /></div>
+									<div class="plus">+</div>
+								</div>
+								<div class="host_item">
+									<div class="item left"><input value="qq.com" /></div>
+									<div class="item right"><input value="/public/test.html" /></div>
+									<div class="minus">-</div>
+								</div>
+								<div class="host_item">
+									<div class="item left"><input value="web2.qq.com" /></div>
+									<div class="item right"><input value="/public/test2.html" /></div>
+									<div class="minus">-</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="dataright" style="margin-left:20px">
+				<div class="box detailbox">
+					<div class="toolbar">
+						<div class="buttons">
+							<div class="button push" style="display:none;"></div>
+							<div class="button pop"></div>
+							<div class="button close"></div>
+						</div>
+					</div>
+					<div class="content">
+						<div class="lable">
+							<span>DashBoard</span>
+							<div class="button ">global</div>
+							<div class="button ">rule</div>
+							<div class="button selected">host</div>
+						</div>
+						<div class="bodywrap">
+							<div class="body">
+								<div class="host_head">
+									<div class="item left"><input placeholder="host" /></div>
+									<div class="item right"><input placeholder="ip" /></div>
+									<div class="plus">+</div>
+								</div>
+								<div class="host_item">
+									<div class="item left"><input value="www.qq.com" /></div>
+									<div class="item right"><input value="127.0.0.1" /></div>
+									<div class="minus">-</div>
+								</div>
+								<div class="host_item">
+									<div class="item left"><input value="www.qq.com" /></div>
+									<div class="item right"><input value="127.0.0.1" /></div>
+									<div class="minus">-</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+</body>
+<script>
+var id= function(id) {
+	return document.getElementById(id);
+}
+var addClass= function(ele, name) {
+	var classname= ele.className;
+	if(classname.indexOf(name) == -1) {
+		ele.className= classname+ " "+ name;
+	}
+}
+var removeClass= function(ele, name) {
+	var classname= ele.className;
+	classname= classname.replace(name," ");
+	ele.className= classname;
+}
+var file= id("file");
+var pop= id("pop");
+var rule= id("rule");
+var rule_head= id("rule_head");
+var file_pad= id("file_pad");
+var switcher= id("switcher");
+var switcher_on= true;
+switcher.onclick= function() {
+	if(switcher_on) {
+		removeClass(switcher, "on");
+		addClass(switcher, "off");
+		switcher_on= false;
+	}else {
+		removeClass(switcher, "off");
+		addClass(switcher, "on");
+		switcher_on= true;
+	}
+}
+file.onchange= function() {
+	console.info(file.value);
+}
+document.body.ondragenter= function() {
+	addClass(rule_head, "rule_head");
+}
+document.body.ondragover= function (e) {
+	e.preventDefault();
+	return false;
+};
+file_pad.ondrop= function(e) {
+	e.preventDefault();
+	console.info(e.dataTransfer.files);
+}
+pop.onclick= function() {
+	rule.style.display= "none";
+	window.son= window.open("window.html","son",'height=500,width=400,resizable=yes,location=no,status=no');
+}
+window.push= function() {
+	rule.style.display= "block";
+	try {
+		son.close();
+	}catch(e) {
+		
+	}
+}
+window.onunload= function() {
+	son.close();
+}
+console.info(chrome.extension);
+</script>
+</html>

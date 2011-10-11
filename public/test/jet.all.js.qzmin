@@ -1,0 +1,17 @@
+{
+	"projects": [
+		{
+			"name": "QQWeb",
+			"target": "./js/jet.all.js",
+			"include": [
+				"../test/a.js",
+				"../test/b.js",
+				"../test/c.js"
+			]
+		}
+	],
+	"level": 0,
+	"shrink": false,
+	"encode": "utf-8",
+	"comment": "QQWeb Group 2010"
+}
