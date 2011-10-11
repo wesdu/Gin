@@ -74,7 +74,7 @@ var proxy= https.createServer(options, function (req, res) {
 		resData.body= file.content;
 		//send
 		res.writeHead(statusCode, headers);
-		res.end(new Buffer(file.content), 'binary');
+		res.end(new Buffer(file.content, file.encode), 'binary');
 	}else {
 		req.on("data", function(d) {
 			backEnd.write(d);
