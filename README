@@ -20,4 +20,4 @@ debug mode:
 	
 notice:
 	1.the project is under development, not stable
-	2.you can put the d-cert.pem in the system trusted list to avoid the browser warnning
+	2.you can put the d-cert.pem in the system trusted list to avoid browser warnning
